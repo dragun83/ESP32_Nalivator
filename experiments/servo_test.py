@@ -1,7 +1,6 @@
 #This is main prog
 #Тут пишем основную прогу
 import esp32
-import json
 import machine
 import time
 

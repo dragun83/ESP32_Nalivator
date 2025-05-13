@@ -15,13 +15,6 @@ COLOR_PINS = {
     'blue': Pin(8, Pin.OUT)
 }
 
-BUTTON_PINS = (
-    Pin(0, Pin.IN, Pin.PULL_UP),
-    Pin(1, Pin.IN, Pin.PULL_UP),
-    Pin(2, Pin.IN, Pin.PULL_UP),
-    Pin(3, Pin.IN, Pin.PULL_UP)
-    )
-
 # Состояния диодов [R, G, B] для каждого из 4 диодов
 led_states = [
     [0, 0, 0],  # Диод 0
@@ -63,31 +56,23 @@ def refresh_display(timer):
     # Включаем анод нового диода
     RGB_ANODES[current_led].on()
 
-
-def read_buttons():
-    for button_index, button in enumerate(BUTTON_PINS):
-        print(f"Кнопка {button_index} имеет состояние {button.value()}")
-        if button.value() == 0:
-            utime.sleep_ms(20)
-            if button.value() == 0:
-                led_states[button_index] = [0, 1, 0]
-        else:
-            led_states[button_index] = [1, 0, 0]
-    
-
 def main():
     init_display()
     
     # Настройка таймера для обновления дисплея (частота 200 Гц)
     display_timer = Timer()
-    display_timer.init(freq=300, mode=Timer.PERIODIC, callback=refresh_display)
+    display_timer.init(freq=800, mode=Timer.PERIODIC, callback=refresh_display)
     
     # Основной цикл программы может делать другие вещи
     counter = 0
     while True:
         print(f"Основная программа работает... {counter}")
         counter += 1
-        read_buttons()
+        led_states[3] = [0,0,1]
+        # Пример изменения цветов в реальном времени
+        if counter % 10 == 0:
+            led_states[0][0] = not led_states[0][0]  # Мигаем красным на 1-м диоде
+        
         utime.sleep_ms(100)
 
 if __name__ == '__main__':
